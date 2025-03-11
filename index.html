@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LOGIN</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url('background.jpeg'); /* Ruta corregida */
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+        
+        .login-container {
+            width: 360px;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            z-index: 2;
+            text-align: center;
+        }
+        
+        .login-title {
+            font-size: 2rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+        }
+        
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px 12px 45px;
+            border: none;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+        
+        .input-group span {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6c2bd9;
+        }
+        
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            color: white;
+            font-size: 0.9rem;
+        }
+        
+        .remember {
+            display: flex;
+            align-items: center;
+        }
+        
+        .remember input {
+            margin-right: 5px;
+        }
+        
+        .forgot a {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .forgot a:hover {
+            text-decoration: underline;
+        }
+        
+        .signin-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #6c2bd9;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 20px;
+        }
+        
+        .signin-btn:hover {
+            background-color: #5a23b8;
+        }
+        
+        .footer {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.8rem;
+            position: absolute;
+            bottom: 20px;
+            text-align: center;
+            width: 100%;
+            z-index: 2;
+        }
+        
+        @media (max-width: 400px) {
+            .login-container {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1 class="login-title">LOGIN</h1>
+        <form id="loginForm">
+            <div class="input-group">
+                <span>👤</span>
+                <input type="text" id="username" name="username" placeholder="Username" required>
+            </div>
+            <div class="input-group">
+                <span>🔒</span>
+                <input type="password" id="password" name="password" placeholder="Password" required>
+            </div>
+            <div class="remember-forgot">
+                <div class="remember">
+                    <input type="checkbox" id="showPassword">
+                    <label for="showPassword">Show Password</label>
+                </div>
+                <div class="forgot">
+                    <a href="#">Forgot password?</a>
+                </div>
+            </div>
+            <button type="submit" class="signin-btn">SIGN IN</button>
+            <div class="remember">
+                <input type="checkbox" id="keepSigned">
+                <label for="keepSigned">Keep me signed in</label>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Mostrar/ocultar contraseña
+        document.getElementById("showPassword").addEventListener("change", function () {
+            const passwordField = document.getElementById("password");
+            passwordField.type = this.checked ? "text" : "password";
+        });
+
+        // Manejar el envío del formulario con Fetch API
+        document.getElementById("loginForm").addEventListener("submit", async (event) => {
+            event.preventDefault(); // Evitar recargar la página
+        
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+        
+            const response = await fetch("http://localhost:3000/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password })
+            });
+        
+            const data = await response.json();
+        
+            if (response.ok) {
+                console.log("🔹 Hash generado en el servidor:", data.hash); // Muestra el hash en la consola
+                
+                if (data.success) {
+                    window.location.href = data.redirect;  // Redirigir al usuario
+                } else {
+                    alert("❌ Credenciales incorrectas");
+                }
+            } else {
+                alert("❌ Error en la autenticación");
+            }
+        });
+        
+    </script>
+</body>
+</html>

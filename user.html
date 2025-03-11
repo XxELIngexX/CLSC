@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Información del Usuario</title>
+</head>
+<body>
+    <h2>Datos del Usuario</h2>
+    <pre id="user-info">Cargando...</pre>
+
+    <script>
+        fetch("/user")
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("user-info").textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                document.getElementById("user-info").textContent = "Error al obtener los datos del usuario.";
+            });
+    </script>
+</body>
+</html>

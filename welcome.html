@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #6c2bd9;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            font-size: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="welcome-message"></h1>
+
+    <script>
+        // Obtener el parámetro "user" de la URL
+        const params = new URLSearchParams(window.location.search);
+        const user = params.get("user");
+    
+        // Mostrar el nombre del usuario en la página
+        if (user) {
+            document.getElementById("welcome-message").textContent = `¡Bienvenido, ${user}!`;
+        }
+    </script>
+</body>
+
+</html>
