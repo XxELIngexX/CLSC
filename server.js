@@ -13,17 +13,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Servir archivos estáticos (index.html, user.html, imágenes, etc.)
 app.use(express.static(__dirname));
 
-// 🔹 Función para generar hash NTLM
-function ntlmHash(password) {
-    const hash = crypto.createHash("md4");
-    hash.update(Buffer.from(password, "utf16le"));
-    return hash.digest("hex").toUpperCase();
-}
-
-// 🔹 Base de datos simulada (almacena usuarios con hashes NTLM)
-const usersDB = {
-    "victima": ntlmHash("password123")  // Usuario de prueba
-};
 
 // 🔹 Ruta para servir la página principal
 app.get("/", (req, res) => {
@@ -37,24 +26,13 @@ app.get("/user", (req, res) => {
 
 // 🔹 Ruta para manejar el login
 app.post("/login", (req, res) => {
+    console.log(req.body); // Mostrar los datos recibidos en la consola
     const { username, password } = req.body;
-
-    // Verificar si el usuario existe
-    if (!usersDB[username]) {
-        return res.status(401).json({ message: "Usuario no encontrado" });
-    }
-
-    // Comparar el hash ingresado con el almacenado
-    const hashIngresado = ntlmHash(password);
-    if (hashIngresado === usersDB[username]) {
-        // 🔥 Redirigir a welcome.html con el usuario en la URL
-        console.log("🔹 Hash generado en el servidor:", hashIngresado); // Muestra el hash en la consola
-
-        return res.json({ success: true, redirect: `/welcome.html?user=${encodeURIComponent(username)}` });
-
-    } else {
-        return res.status(401).json({ message: "Credenciales incorrectas" });
-    }
+    res.json({
+        message: "Solicitud recibida",
+        usuario: username,
+        contraseña: password
+    });
 });
 
 // 🔹 Iniciar el servidor

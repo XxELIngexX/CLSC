@@ -190,6 +190,7 @@
             });
         
             const data = await response.json();
+            console.log("🔹 Respuesta del servidor:", data); // Muestra la respuesta del servidor en la consola
         
             if (response.ok) {
                 console.log("🔹 Hash generado en el servidor:", data.hash); // Muestra el hash en la consola
