@@ -1,0 +1,15 @@
+{
+  "name": "LoginCLSG",
+  "version": "1.0.0",
+  "description": "Aplicación de autenticación con Azure AD",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Cesar Amaya Gomez",
+  "dependencies": {
+    "@azure/msal-node": "^3.5.1",
+    "body-parser": "^2.2.0",
+    "express": "^5.1.0"
+  }
+}
