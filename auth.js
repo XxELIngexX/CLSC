@@ -1,8 +1,9 @@
+// auth.js
 const { PublicClientApplication } = require('@azure/msal-node');
 const msalConfig = {
     auth: {
-        clientId: '78f83c7b-94ca-4e47-a602-8de477aa0179',  // Reemplaza con tu Client ID
-        authority: 'https://login.microsoftonline.com/50640584-2a40-4216-a84b-9b3ee0f3f6cf',  // Reemplaza con tu Tenant ID
+        clientId: '78f83c7b-94ca-4e47-a602-8de477aa0179',  // App ID
+        authority: 'https://login.microsoftonline.com/50640584-2a40-4216-a84b-9b3ee0f3f6cf',  // Tenant ID
     }
 };
 const cca = new PublicClientApplication(msalConfig);
@@ -11,7 +12,7 @@ const cca = new PublicClientApplication(msalConfig);
 function loginMicrosoft(req, res) {
     const authUrl = cca.getAuthCodeUrl({
         scopes: ['User.Read'],
-        redirectUri: 'https://clsg-app.azurewebsites.net/auth/callback',  // URL de redirección de Azure
+        redirectUri: 'https://clsg-app.azurewebsites.net/auth/callback',  // Actualiza a la URL de producción
     });
     res.redirect(authUrl);  // Redirige a la página de login
 }
@@ -22,7 +23,7 @@ async function authCallback(req, res) {
     const tokenRequest = {
         code: authCode,
         scopes: ['User.Read'],
-        redirectUri: 'https://clsg-app.azurewebsites.net/auth/callback',  // URL de redirección de Azure
+        redirectUri: 'https://clsg-app.azurewebsites.net/auth/callback',  // Actualiza a la URL de producción
     };
 
     try {
@@ -35,5 +36,4 @@ async function authCallback(req, res) {
     }
 }
 
-// Exportar las funciones
 module.exports = { loginMicrosoft, authCallback };

@@ -19,14 +19,13 @@ app.get("/", (req, res) => {
 });
 
 // Ruta para iniciar sesión con Microsoft
-app.get("/login", loginMicrosoft);
+app.get("/loginMicrosoft", loginMicrosoft);  // Redirigir a Microsoft
 
 // Ruta para manejar el callback de autenticación
-app.get("/auth/callback", authCallback);
+app.get("/auth/callback", authCallback);  // Procesar el token de acceso
 
 // Iniciar el servidor
 const port = process.env.PORT || 8080;  // Utiliza el puerto asignado por Azure si está disponible
-
 app.listen(port, '0.0.0.0', () => {
     console.log(`Servidor corriendo en http://0.0.0.0:${port}`);
 });
