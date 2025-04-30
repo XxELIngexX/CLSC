@@ -10,20 +10,31 @@ const cca = new PublicClientApplication(msalConfig);
 
 // Función para redirigir al inicio de sesión de Microsoft
 function loginMicrosoft(req, res) {
-    const authUrl = cca.getAuthCodeUrl({
+    cca.getAuthCodeUrl({
         scopes: ['User.Read'],
-        redirectUri: 'https://clsg-app.azurewebsites.net/auth/callback',  // Actualiza a la URL de producción
+        redirectUri: 'https://clsg-app.azurewebsites.net/auth/callback',
+    })
+    .then(authUrl => {
+        console.log("🔹 URL de autenticación:", authUrl);  // Verifica la URL en la consola
+        res.redirect(authUrl);  // Redirige a la página de login
+    })
+    .catch(error => {
+        console.error("Error al obtener la URL de autenticación:", error);
+        res.status(500).send('Error en el inicio de sesión');
     });
-    res.redirect(authUrl);  // Redirige a la página de login
 }
 
 // Función para manejar el callback y obtener el token de acceso
 async function authCallback(req, res) {
     const authCode = req.query.code;
+    if (!authCode) {
+        return res.status(400).send('Código de autorización no recibido');
+    }
+
     const tokenRequest = {
         code: authCode,
         scopes: ['User.Read'],
-        redirectUri: 'https://clsg-app.azurewebsites.net/auth/callback',  // Actualiza a la URL de producción
+        redirectUri: 'https://clsg-app.azurewebsites.net/auth/callback',
     };
 
     try {
@@ -35,5 +46,6 @@ async function authCallback(req, res) {
         res.status(500).send('Error en la autenticación');
     }
 }
+
 
 module.exports = { loginMicrosoft, authCallback };
