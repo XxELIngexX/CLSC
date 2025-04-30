@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
 });
 
 // Ruta para iniciar sesión con Microsoft
-app.get("/loginMicrosoft", loginMicrosoft);
+app.get("/login", loginMicrosoft);
 
 // Ruta para manejar el callback de autenticación
 app.get("/auth/callback", authCallback);
