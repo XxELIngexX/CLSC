@@ -27,25 +27,21 @@ function loginMicrosoft(req, res) {
 // Función para manejar el callback y obtener el token de acceso
 async function authCallback(req, res) {
     const authCode = req.query.code;
-    if (!authCode) {
-        return res.status(400).send('Código de autorización no recibido');
-    }
-
     const tokenRequest = {
         code: authCode,
         scopes: ['User.Read'],
-        redirectUri: 'https://clsg-app.azurewebsites.net/auth/callback',
+        redirectUri: 'https://clsg-app.azurewebsites.net/auth/callback',  // La URL de redirección de Azure
     };
 
     try {
         const response = await cca.acquireTokenByCode(tokenRequest);
         console.log('Token recibido:', response.accessToken);
-        res.send('Inicio de sesión exitoso');
+        
+        // Redirige a la página /autenticado después de una autenticación exitosa
+        res.redirect('/autenticado');  // Aquí es donde se redirige
     } catch (error) {
         console.error('Error al obtener el token:', error);
         res.status(500).send('Error en la autenticación');
     }
 }
-
-
 module.exports = { loginMicrosoft, authCallback };
