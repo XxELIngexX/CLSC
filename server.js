@@ -4,7 +4,6 @@ const crypto = require("crypto");
 const path = require("path");
 
 const app = express();
-const port = 8080;
 
 // Middleware para procesar datos JSON y formularios
 app.use(bodyParser.json());
@@ -36,6 +35,8 @@ app.post("/login", (req, res) => {
 });
 
 // 🔹 Iniciar el servidor
+const port = process.env.PORT || 8080;  // Utiliza el puerto asignado por Azure si está disponible
+
 app.listen(port, '0.0.0.0', () => {
     console.log(`Servidor corriendo en http://0.0.0.0:${port}`);
 });
