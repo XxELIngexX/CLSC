@@ -1,4 +1,3 @@
-// auth.js
 const { PublicClientApplication } = require('@azure/msal-node');
 const msalConfig = {
     auth: {
@@ -12,7 +11,7 @@ const cca = new PublicClientApplication(msalConfig);
 function loginMicrosoft(req, res) {
     const authUrl = cca.getAuthCodeUrl({
         scopes: ['User.Read'],
-        redirectUri: 'http://localhost:3000/auth/callback',
+        redirectUri: 'https://clsg-app.azurewebsites.net/auth/callback',  // URL de redirección de Azure
     });
     res.redirect(authUrl);  // Redirige a la página de login
 }
@@ -23,7 +22,7 @@ async function authCallback(req, res) {
     const tokenRequest = {
         code: authCode,
         scopes: ['User.Read'],
-        redirectUri: 'http://localhost:3000/auth/callback',
+        redirectUri: 'https://clsg-app.azurewebsites.net/auth/callback',  // URL de redirección de Azure
     };
 
     try {
