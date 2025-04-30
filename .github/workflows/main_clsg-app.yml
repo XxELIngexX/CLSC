@@ -61,4 +61,4 @@ jobs:
           app-name: 'CLSG-app'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_D3765DB3BF3E44D3ABAC12A4D870017C }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_CD5F8B3650AD4E929AA67BB97713F6C6 }}
