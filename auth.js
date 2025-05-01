@@ -2,14 +2,16 @@
 const REDIRECT_URI = "https://clsg-app.azurewebsites.net/auth/callback";
 
 
-const { PublicClientApplication } = require('@azure/msal-node');
+const { ConfidentialClientApplication } = require('@azure/msal-node');
 const msalConfig = {
     auth: {
-        clientId: '78f83c7b-94ca-4e47-a602-8de477aa0179',  // App ID
-        authority: 'https://login.microsoftonline.com/50640584-2a40-4216-a84b-9b3ee0f3f6cf/v2.0',  // Tenant ID
-    }
+        clientId: process.env.CLIENT_ID,
+        authority: process.env.AUTHORITY, 
+        client_secret: process.env.CLIENT_SECRET
+                }
 };
-const cca = new PublicClientApplication(msalConfig);
+const cca = new ConfidentialClientApplication(msalConfig);
+
 
 // Función para redirigir al inicio de sesión de Microsoft
 function loginMicrosoft(req, res) {
