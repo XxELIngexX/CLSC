@@ -28,15 +28,12 @@ app.get("/login", loginMicrosoft);  // Redirigir a Microsoft
 // Ruta para manejar el callback de autenticación
 app.get("/auth/callback", authCallback); 
 app.get("/autenticado", (req, res) => {
-    // Easy Auth inyecta el JWT en este header
-    const token = req.headers["x-ms-token-aad-access-token"];
-    if (!token) {
-      // No autenticado: redirigir al flujo de Easy Auth
-      return res.redirect("/login");
+    const user = req.query.user;
+    if (!user) {
+      // sin user en la URL → vuelves a /login
+      return res.redirect('/login');
     }
-  
-    // Mostrar en consola (PoC de pass-the-token)
-    console.log("🔹 Token capturado (pass-the-token):", token);
+    // Tienes user → sirves la página de bienvenida
   
     // Responder con página HTML que muestra el token
     res.send(`
@@ -54,7 +51,7 @@ app.get("/autenticado", (req, res) => {
       <body>
         <h1>¡Bienvenido!</h1>
         <p>Este es el token capturado (pass-the-token):</p>
-        <pre>${token}</pre>
+       
       </body>
       </html>
     `);
