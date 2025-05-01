@@ -3,41 +3,32 @@
 console.log('CLIENT_SECRET desde env:', process.env.CLIENT_SECRET);
 
 
-const express = require("express");
-const session = require('express-session');
-const bodyParser = require("body-parser");
-const path = require("path");
-const { loginMicrosoft, authCallback } = require('./auth');  // Importa las funciones
+const express = require('express');
+const session = require('express-session');       // <— require
+const path    = require('path');
+const { loginMicrosoft, authCallback } = require('./auth');
 
 const app = express();
 
-
-// ————————  CONFIGURA sessions —————————
+// 1) CONFIGURA express-session ANTES de cualquier ruta
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'unaClaveMuySecreta', 
+  secret: process.env.SESSION_SECRET || 'clave_muy_secreta', 
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false }  // si usas HTTPS en producción pon secure: true
+  cookie: { secure: false } // si en producción usas HTTPS, pon secure:true
 }));
 
-// Middleware para procesar datos JSON y formularios
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// Servir archivos estáticos (index.html, user.html, imágenes, etc.)
+// 2) Middleware estáticos y de parsing (si lo necesitas)
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
 
-// Ruta para la página principal
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "index.html"));
+// 3) Tus rutas
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
-
-// Ruta para iniciar sesión con Microsoft
-app.get("/login", loginMicrosoft);  // Redirigir a Microsoft
-
-// Ruta para manejar el callback de autenticación
-app.get("/auth/callback", authCallback); 
-
+app.get('/login', loginMicrosoft);
+app.get('/auth/callback', authCallback);
 app.get("/autenticado", (req, res) => {
   if (!req.session.user) {
     // Sin sesión → redirige a /login
