@@ -27,31 +27,21 @@ app.get("/login", loginMicrosoft);  // Redirigir a Microsoft
 
 // Ruta para manejar el callback de autenticación
 app.get("/auth/callback", authCallback); 
+
 app.get("/autenticado", (req, res) => {
-    const user = req.query.user;
-    if (!user) {
-      // sin user en la URL → vuelves a /login
-      return res.redirect('/login');
-    }
+  if (!req.session.user) {
+    // Sin sesión → redirige a /login
+    return res.redirect('/login');
+  }
     // Tienes user → sirves la página de bienvenida
   
     // Responder con página HTML que muestra el token
-    res.send(`
+    return res.send(`
       <!DOCTYPE html>
       <html lang="es">
-      <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Bienvenido</title>
-        <style>
-          body { font-family: Arial, sans-serif; margin: 2rem; }
-          pre { background: #f4f4f4; padding: 1rem; border-radius: 4px; overflow-x: auto; }
-        </style>
-      </head>
-      <body>
-        <h1>¡Bienvenido!</h1>
-        <p>Este es el token capturado (pass-the-token):</p>
-       
+      <head><meta charset="UTF-8"><title>Bienvenido</title></head>
+      <body style="display:flex;align-items:center;justify-content:center;height:100vh;background:#6c2bd9;color:#fff;">
+        <h1>¡Bienvenido, ${req.session.user}!</h1>
       </body>
       </html>
     `);
