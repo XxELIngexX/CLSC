@@ -32,7 +32,7 @@ app.get("/autenticado", (req, res) => {
     const token = req.headers["x-ms-token-aad-access-token"];
     if (!token) {
       // No autenticado: redirigir al flujo de Easy Auth
-      return res.redirect("/.auth/login/microsoft");
+      return res.redirect("/login");
     }
   
     // Mostrar en consola (PoC de pass-the-token)
