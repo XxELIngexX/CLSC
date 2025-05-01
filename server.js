@@ -4,11 +4,21 @@ console.log('CLIENT_SECRET desde env:', process.env.CLIENT_SECRET);
 
 
 const express = require("express");
+const session = require('express-session');
 const bodyParser = require("body-parser");
 const path = require("path");
 const { loginMicrosoft, authCallback } = require('./auth');  // Importa las funciones
 
 const app = express();
+
+
+// ————————  CONFIGURA sessions —————————
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'unaClaveMuySecreta', 
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false }  // si usas HTTPS en producción pon secure: true
+}));
 
 // Middleware para procesar datos JSON y formularios
 app.use(bodyParser.json());
