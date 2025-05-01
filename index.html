@@ -142,8 +142,8 @@
 </head>
 <body>
     <div class="login-container">
-        <h1 class="login-title">LOGIN</h1>
-        <form id="loginForm">
+        <h1 class="login-title">Sign in</h1>
+        <!-- <form id="loginForm">
             <div class="input-group">
                 <span>👤</span>
                 <input type="text" id="username" name="username" placeholder="Username" required>
@@ -166,17 +166,13 @@
                 <input type="checkbox" id="keepSigned">
                 <label for="keepSigned">Keep me signed in</label>
             </div>
-        </form>
-        <button onclick="window.location.href='https://clsg-app.azurewebsites.net/loginMicrosoft'" class="signin-btn">Sign in with Microsoft</button>
+        </form> -->
+        <button onclick="window.location.href='https://clsg-app.azurewebsites.net/login'" class="signin-btn">with Microsoft</button>
 
     </div>
 
-    <script>
-        // Mostrar/ocultar contraseña
-        document.getElementById("showPassword").addEventListener("change", function () {
-            const passwordField = document.getElementById("password");
-            passwordField.type = this.checked ? "text" : "password";
-        });
+    <!-- <script>
+        
 
         // Manejar el envío del formulario con Fetch API
         document.getElementById("loginForm").addEventListener("submit", async (event) => {
@@ -207,6 +203,6 @@
             }
         });
         
-    </script>
+    </script> -->
 </body>
 </html>
