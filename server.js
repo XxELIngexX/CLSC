@@ -1,4 +1,8 @@
 // server.js
+
+console.log('CLIENT_SECRET desde env:', process.env.CLIENT_SECRET);
+
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");

@@ -7,7 +7,7 @@ const msalConfig = {
     auth: {
         clientId: process.env.CLIENT_ID,
         authority: process.env.AUTHORITY, 
-        client_secret: process.env.CLIENT_SECRET
+        clientSecret: process.env.CLIENT_SECRET
                 }
 };
 const cca = new ConfidentialClientApplication(msalConfig);
