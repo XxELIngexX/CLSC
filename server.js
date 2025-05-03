@@ -11,12 +11,14 @@ const { loginMicrosoft, authCallback } = require('./auth');
 const app = express();
 
 // 1) SESSIONS — debe ir antes de app.use(express.static) y de las rutas
+// Configuración correcta de express-session
 app.use(session({
   secret: process.env.SESSION_SECRET || 'una_clave_secreta',
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false }  // en prod con HTTPS pon `secure: true`
+  cookie: { secure: false }  // Si en producción usa HTTPS, pon secure: true
 }));
+
 
 // 2) Archivos estáticos y parsing (si los necesitas)
 app.use(express.static(__dirname));

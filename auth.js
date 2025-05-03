@@ -29,12 +29,14 @@ function loginMicrosoft(req, res) {
     });
 }
 
-// Función para manejar el callback y obtener el token de acceso
 async function authCallback(req, res) {
-    const authCode = req.query.code;
+    const authCode = req.query.code;  // El código de autorización desde la query string
     if (!authCode) {
+        console.error("Error: No se recibió el código de autorización");
         return res.status(400).send('Código de autorización no recibido');
     }
+
+    console.log("🔹 Código de autorización recibido:", authCode);
 
     const tokenRequest = {
         code: authCode,
@@ -53,4 +55,5 @@ async function authCallback(req, res) {
         res.status(500).send('(cesar) Error en la autenticación');
     }
 }
+
 module.exports = { loginMicrosoft, authCallback };
