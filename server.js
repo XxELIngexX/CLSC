@@ -1,26 +1,39 @@
-// server.js
-
-console.log('CLIENT_SECRET desde env:', process.env.CLIENT_SECRET);
-
-
 const express = require('express');
-const path    = require('path');
-const { loginMicrosoft, authCallback } = require('./auth');
+const session = require('express-session'); // Asegúrate de haber instalado este paquete
+const path = require('path');
+const { loginMicrosoft, authCallback } = require('./auth'); // Importa las funciones
+
 const app = express();
+
+// Configuración de la sesión
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'miClaveSecreta',  // Cambia esto por algo más seguro
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }  // Si usas HTTPS, cambia a `true`
+}));
 
 app.use(express.static(__dirname));
 
-app.get('/',      (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+// Ruta para la página principal
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+
+// Ruta para iniciar sesión con Microsoft
 app.get('/login', loginMicrosoft);
+
+// Ruta para manejar el callback de autenticación
 app.get('/auth/callback', authCallback);
+
+// Ruta protegida
 app.get('/autenticado', (req, res) => {
-  // Verifica si el usuario está en la sesión
   if (!req.session.user) {
-    // Si no está autenticado, redirige al login
     return res.redirect('/login');
   }
-  // Si está autenticado, muestra la página de bienvenida
   res.sendFile(path.join(__dirname, 'welcome.html'));
 });
 
-app.listen(process.env.PORT||8080, ()=> console.log('Listening'));
+// Inicia el servidor
+const port = process.env.PORT || 8080;
+app.listen(port, () => {
+  console.log(`Servidor corriendo en http://0.0.0.0:${port}`);
+});
