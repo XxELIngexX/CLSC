@@ -24,13 +24,30 @@ app.get('/login', loginMicrosoft);
 // Ruta para manejar el callback de autenticación
 app.get('/auth/callback', authCallback);
 
-// Ruta protegida
+// Ruta para el acceso a la página de bienvenida
+app.get('/welcome.html', (req, res) => {
+  const user = req.session.user;
+
+  // Verifica si el usuario está autenticado
+  if (!user) {
+    return res.redirect('/login'); // Si no está autenticado, redirige al login
+  }
+
+  // Si está autenticado, permite el acceso a la página welcome.html
+  res.sendFile(path.join(__dirname, 'welcome.html'));
+});
+
+// Ruta para redirigir a /autenticado
 app.get('/autenticado', (req, res) => {
   const user = req.session.user;
+
+  // Verifica si el usuario está autenticado
   if (!user) {
-    return res.redirect('/login');
+    return res.redirect('/login'); // Si no está autenticado, redirige al login
   }
-  res.redirect(`/welcome.html?user=${user}`);  // Pasamos el parámetro 'user' a la URL de bienvenida
+
+  // Si está autenticado, redirige a welcome.html con el parámetro de usuario
+  res.redirect(`/welcome.html?user=${user}`);
 });
 
 
