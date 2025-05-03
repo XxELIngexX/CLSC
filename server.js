@@ -4,53 +4,38 @@ console.log('CLIENT_SECRET desde env:', process.env.CLIENT_SECRET);
 
 
 const express = require('express');
-const session = require('express-session');       // <— require
-const path    = require('path');
-const { loginMicrosoft, authCallback } = require('./auth');
+const session = require('express-session');  // Asegúrate de importar express-session
+const path = require('path');
+const { loginMicrosoft, authCallback } = require('./auth'); // Importar las funciones
 
 const app = express();
 
-// 1) CONFIGURA express-session ANTES de cualquier ruta
+// 1. Configura express-session ANTES de cualquier ruta
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'clave_muy_secreta', 
+  secret: process.env.SESSION_SECRET || 'clave_muy_secreta',  // Cambia esta clave por algo seguro
   resave: false,
   saveUninitialized: false,
-  cookie: { secure: false } // si en producción usas HTTPS, pon secure:true
+  cookie: {
+    secure: false,  // Cambia a true si usas HTTPS en producción
+  }
 }));
 
-// 2) Middleware estáticos y de parsing (si lo necesitas)
-// app.use(express.json());
-// app.use(express.urlencoded({ extended: true }));
+// 2. Archivos estáticos
 app.use(express.static(__dirname));
 
-// 3) Tus rutas
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
+// 3. Rutas
+app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 app.get('/login', loginMicrosoft);
 app.get('/auth/callback', authCallback);
-app.get("/autenticado", (req, res) => {
+
+app.get('/autenticado', (req, res) => {
+  // 4. Verifica que req.session.user existe
   if (!req.session.user) {
-    // Sin sesión → redirige a /login
-    return res.redirect('/login');
+    return res.redirect('/login'); // Redirige si no está autenticado
   }
-    // Tienes user → sirves la página de bienvenida
-  
-    // Responder con página HTML que muestra el token
-    return res.send(`
-      <!DOCTYPE html>
-      <html lang="es">
-      <head><meta charset="UTF-8"><title>Bienvenido</title></head>
-      <body style="display:flex;align-items:center;justify-content:center;height:100vh;background:#6c2bd9;color:#fff;">
-        <h1>¡Bienvenido, ${req.session.user}!</h1>
-      </body>
-      </html>
-    `);
-  });
-
-
-// Iniciar el servidor
-const port = process.env.PORT || 8080;  // Utiliza el puerto asignado por Azure si está disponible
-app.listen(port, '0.0.0.0', () => {
-    console.log(`Servidor corriendo en http://0.0.0.0:${port}`);
+  // 5. Sirve el welcome.html
+  res.sendFile(path.join(__dirname, 'welcome.html'));
 });
+
+const port = process.env.PORT || 8080;
+app.listen(port, () => console.log(`Servidor corriendo en puerto ${port}`));
