@@ -25,31 +25,21 @@ function loginMicrosoft(req, res) {
     });
 }
 async function authCallback(req, res) {
-    const code = req.query.code;
-    if (!code) {
-        return res.status(400).send("No se recibió el código de autorización.");
-    }
-
+    const code = req.query.code;  // El código de autorización
     try {
-        const resp = await cca.acquireTokenByCode({
-            code,
-            scopes: ['User.Read'],
-            redirectUri: REDIRECT_URI,
-        });
-        console.log('Token recibido:', resp);  // Añadir un log para depurar
-
-        if (resp.account && resp.account.username) {
-            req.session.user = resp.account.username;  // Guardar el usuario en la sesión
-        } else {
-            console.error('No se pudo obtener el usuario.');
-            return res.status(500).send('Error: No se pudo obtener el nombre de usuario.');
-        }
-
-        return res.redirect('/autenticado');
+      const response = await cca.acquireTokenByCode({
+        code: code,
+        scopes: ['User.Read'],
+        redirectUri: 'https://clsg-app.azurewebsites.net/auth/callback',  // Redirige aquí
+      });
+      console.log('Token recibido:', response);
+  
+      // Asegúrate de guardar el usuario en la sesión
+      req.session.user = response.account.username;  // Aquí guardas el nombre de usuario
+      return res.redirect('/autenticado');
     } catch (error) {
-        console.error('Error al obtener el token:', error);
-        res.status(500).send('Error en la autenticación');
+      console.error('Error al obtener el token:', error);
+      res.status(500).send('Error en la autenticación');
     }
-}
-
+  }
 module.exports = { loginMicrosoft, authCallback };
