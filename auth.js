@@ -2,18 +2,14 @@
 const REDIRECT_URI = "https://clsg-app.azurewebsites.net/auth/callback";
 
 
-const { ConfidentialClientApplication } = require('@azure/msal-node');
+const { PublicClientApplication } = require('@azure/msal-node');
 const msalConfig = {
     auth: {
-        clientId: process.env.CLIENT_ID,
-        authority: process.env.AUTHORITY, 
-        clientSecret: process.env.CLIENT_SECRET
-                }
+        clientId: '78f83c7b-94ca-4e47-a602-8de477aa0179',  // App ID
+        authority: 'https://login.microsoftonline.com/50640584-2a40-4216-a84b-9b3ee0f3f6cf',  // Tenant ID
+    }
 };
-const cca = new ConfidentialClientApplication(msalConfig);
-
-
-// Función para redirigir al inicio de sesión de Microsoft
+const cca = new PublicClientApplication(msalConfig);
 function loginMicrosoft(req, res) {
     cca.getAuthCodeUrl({
         scopes: ['User.Read'],
@@ -28,29 +24,32 @@ function loginMicrosoft(req, res) {
         res.status(500).send('Error en el inicio de sesión (cesar)');
     });
 }
-
-// Función para manejar el callback y obtener el token de acceso
 async function authCallback(req, res) {
-    const authCode = req.query.code;
-    if (!authCode) {
-        return res.status(400).send('Código de autorización no recibido');
+    const code = req.query.code;
+    if (!code) {
+        return res.status(400).send("No se recibió el código de autorización.");
     }
-
-    const tokenRequest = {
-        code: authCode,
-        scopes: ['User.Read'],
-        redirectUri: REDIRECT_URI,  // La URL de redirección de Azure
-    };
 
     try {
-        const response = await cca.acquireTokenByCode(tokenRequest);
-        console.log('Token recibido:', response.accessToken);
+        const resp = await cca.acquireTokenByCode({
+            code,
+            scopes: ['User.Read'],
+            redirectUri: REDIRECT_URI,
+        });
+        console.log('Token recibido:', resp);  // Añadir un log para depurar
 
-        // Redirige a la página de bienvenida después de un inicio de sesión exitoso
-        res.redirect(`/autenticado?user=${encodeURIComponent(response.account.username)}`);  // Pasar el nombre de usuario en la URL
+        if (resp.account && resp.account.username) {
+            req.session.user = resp.account.username;  // Guardar el usuario en la sesión
+        } else {
+            console.error('No se pudo obtener el usuario.');
+            return res.status(500).send('Error: No se pudo obtener el nombre de usuario.');
+        }
+
+        return res.redirect('/autenticado');
     } catch (error) {
-        console.error('(cesar) Error al obtener el token:', error);
-        res.status(500).send('(cesar) Error en la autenticación');
+        console.error('Error al obtener el token:', error);
+        res.status(500).send('Error en la autenticación');
     }
 }
+
 module.exports = { loginMicrosoft, authCallback };
