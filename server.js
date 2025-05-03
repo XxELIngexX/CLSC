@@ -26,11 +26,13 @@ app.get('/auth/callback', authCallback);
 
 // Ruta protegida
 app.get('/autenticado', (req, res) => {
-  if (!req.session.user) {
+  const user = req.session.user;
+  if (!user) {
     return res.redirect('/login');
   }
-  res.sendFile(path.join(__dirname, 'welcome.html'));
+  res.redirect(`/welcome.html?user=${user}`);  // Pasamos el parámetro 'user' a la URL de bienvenida
 });
+
 
 
 // Inicia el servidor
