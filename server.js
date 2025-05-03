@@ -4,38 +4,33 @@ console.log('CLIENT_SECRET desde env:', process.env.CLIENT_SECRET);
 
 
 const express = require('express');
-const session = require('express-session');  // Asegúrate de importar express-session
-const path = require('path');
-const { loginMicrosoft, authCallback } = require('./auth'); // Importar las funciones
+const session = require('express-session');
+const path    = require('path');
+const { loginMicrosoft, authCallback } = require('./auth');
 
 const app = express();
 
-// 1. Configura express-session ANTES de cualquier ruta
+// 1) SESSIONS — debe ir antes de app.use(express.static) y de las rutas
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'clave_muy_secreta',  // Cambia esta clave por algo seguro
+  secret: process.env.SESSION_SECRET || 'una_clave_secreta',
   resave: false,
   saveUninitialized: false,
-  cookie: {
-    secure: false,  // Cambia a true si usas HTTPS en producción
-  }
+  cookie: { secure: false }  // en prod con HTTPS pon `secure: true`
 }));
 
-// 2. Archivos estáticos
+// 2) Archivos estáticos y parsing (si los necesitas)
 app.use(express.static(__dirname));
 
-// 3. Rutas
+// 3) Rutas
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 app.get('/login', loginMicrosoft);
 app.get('/auth/callback', authCallback);
-
 app.get('/autenticado', (req, res) => {
-  // 4. Verifica que req.session.user existe
   if (!req.session.user) {
-    return res.redirect('/login'); // Redirige si no está autenticado
+    return res.redirect('/login');
   }
-  // 5. Sirve el welcome.html
   res.sendFile(path.join(__dirname, 'welcome.html'));
 });
 
-const port = process.env.PORT || 8080;
-app.listen(port, () => console.log(`Servidor corriendo en puerto ${port}`));
+app.listen(process.env.PORT || 8080, () => 
+  console.log('Servidor corriendo')); 
