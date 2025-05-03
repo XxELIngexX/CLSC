@@ -11,6 +11,14 @@ const msalConfig = {
                 }
 };
 const cca = new ConfidentialClientApplication(msalConfig);
+const session = require('express-session'); // Asegúrate de tener esta librería
+
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'miClaveSecreta',  // Cambia esto por algo más seguro
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }  // Si usas HTTPS, cambia a `true`
+}));
 
 
 // Función para redirigir al inicio de sesión de Microsoft
@@ -30,30 +38,31 @@ function loginMicrosoft(req, res) {
 }
 
 async function authCallback(req, res) {
-    const authCode = req.query.code;  // El código de autorización desde la query string
-    if (!authCode) {
-        console.error("Error: No se recibió el código de autorización");
-        return res.status(400).send('Código de autorización no recibido');
-    }
-
+    const authCode = req.query.code;
+    if (!authCode) return res.status(400).send('Código de autorización no recibido');
+  
     console.log("🔹 Código de autorización recibido:", authCode);
-
+  
     const tokenRequest = {
-        code: authCode,
-        scopes: ['User.Read'],
-        redirectUri: REDIRECT_URI,  // La URL de redirección de Azure
+      code: authCode,
+      scopes: ['User.Read'],
+      redirectUri: REDIRECT_URI,
     };
-
+  
     try {
-        const response = await cca.acquireTokenByCode(tokenRequest);
-        console.log('Token recibido:', response.accessToken);
-
-        // Redirige a la página de bienvenida después de un inicio de sesión exitoso
-        res.redirect(`/autenticado?user=${encodeURIComponent(response.account.username)}`);  // Pasar el nombre de usuario en la URL
+      const response = await cca.acquireTokenByCode(tokenRequest);
+      console.log('Token recibido:', response.accessToken);
+  
+      // Guardamos el usuario en la sesión
+      req.session.user = response.account.username;
+  
+      // Redirige a la página de bienvenida
+      res.redirect('/autenticado');
     } catch (error) {
-        console.error('(cesar) Error al obtener el token:', error);
-        res.status(500).send('(cesar) Error en la autenticación');
+      console.error('Error al obtener el token:', error);
+      res.status(500).send('Error en la autenticación');
     }
-}
+  }
+  
 
 module.exports = { loginMicrosoft, authCallback };
