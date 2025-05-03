@@ -6,17 +6,86 @@
     <title>Bienvenido</title>
     <style>
         body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px 0;
+            text-align: center;
+        }
+        
+        header nav ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        header nav ul li {
+            display: inline;
+            margin: 0 20px;
+        }
+        
+        header nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        #staff {
+            padding: 40px;
+            text-align: center;
+            background-color: #fff;
+        }
+        
+        #staff h2 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        
+        .staff-container {
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #6c2bd9;
+            gap: 20px;
+        }
+        
+        .staff-member {
+            background-color: #e0e0e0;
+            padding: 20px;
+            border-radius: 10px;
+            width: 200px;
+            text-align: center;
+        }
+        
+        .staff-member img {
+            width: 100%;
+            height: auto;
+            border-radius: 50%;
+        }
+        
+        .staff-member h3 {
+            margin: 10px 0;
+            font-size: 1.2em;
+        }
+        
+        .staff-member p {
+            font-size: 0.9em;
+            color: #333;
+        }
+        
+        footer {
+            text-align: center;
+            background-color: #333;
             color: white;
-            font-family: Arial, sans-serif;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
         }
-        h1 {
-            font-size: 2rem;
-        }
+        
     </style>
 </head>
 <body>
