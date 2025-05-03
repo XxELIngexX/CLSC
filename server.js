@@ -32,6 +32,7 @@ app.get('/autenticado', (req, res) => {
   res.sendFile(path.join(__dirname, 'welcome.html'));
 });
 
+
 // Inicia el servidor
 const port = process.env.PORT || 8080;
 app.listen(port, () => {

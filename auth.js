@@ -64,5 +64,6 @@ async function authCallback(req, res) {
     }
   }
   
+  
 
 module.exports = { loginMicrosoft, authCallback };
