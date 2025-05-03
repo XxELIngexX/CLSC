@@ -21,7 +21,7 @@ jobs:
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: '16-lts'
 
       - name: npm install, build, and test
         run: |
@@ -61,4 +61,4 @@ jobs:
           app-name: 'CLSG-app'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_15349E96A2B744C8B6F6E300B85C0E73 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_6708D4A03F834D0BB692301FF034E9D6 }}
