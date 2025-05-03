@@ -11,14 +11,7 @@ const msalConfig = {
                 }
 };
 const cca = new ConfidentialClientApplication(msalConfig);
-const session = require('express-session'); // Asegúrate de tener esta librería
 
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'miClaveSecreta',  // Cambia esto por algo más seguro
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false }  // Si usas HTTPS, cambia a `true`
-}));
 
 
 // Función para redirigir al inicio de sesión de Microsoft
